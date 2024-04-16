@@ -195,28 +195,24 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 form.append(statusMessage);
 
-                const request = new XMLHttpRequest();
-                request.open("GET", "https://api.agify.io/?name=ilya")
-                request.send()
-
-                request.addEventListener("load", () => {
-                    if (200 >= request.status <= 205){
-                        console.log(JSON.parse(request.response))
-                        statusMessage.textContent = message.success
-
-                        form.reset()
-                    } else {
-                        console.log(request.status)
-                    }
-                })
+                fetch('https://jsonplaceholder.typicode.com/postsds', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: 'foo',
+                        body: 'bar',
+                        userId: 1,
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    })
+                    .then(response => response.json())
+                    .then(respoce => {
+                        console.log(respoce)
+                        statusMessage.textContent = message.success})
+                    .catch(() => statusMessage.textContent = message.failure)
+                    .finally(() => form.reset())
             }
         })
     }
-    function showThanksModal(){
-     const prevModalDialog = document.querySelector(".modal__dialog");
-     console.log(prevModalDialog)   
-    }
-
-    
-}
-);
+})
