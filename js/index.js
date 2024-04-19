@@ -136,31 +136,17 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    new MenuCard(
-        src="img/tabs/vegy.jpg",
-        alt="vegy",
-        title='Меню "Фитнес"',
-        description='Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        price=9
-    ).render();
+    function createCard(data){
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price).render()
+        })
+    }
 
-    new MenuCard(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        14,
-        ".menu .container"
-    ).render();
-
-    new MenuCard(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        21,
-        ".menu .container"
-    ).render();
+    axios.get("http://localhost:3000/menu")
+    .then(answer => {
+        console.log(answer.data)
+        createCard(answer.data)
+    })
 
     // Формы
 
@@ -174,6 +160,18 @@ window.addEventListener("DOMContentLoaded", () => {
     forms.forEach(form => {
         responceData(form);
     })
+
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        });
+    
+        return await res.json();
+    };
 
     function responceData(form){
         form.addEventListener("submit", (e) => {
@@ -195,23 +193,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 form.append(statusMessage);
 
-                fetch('https://jsonplaceholder.typicode.com/postsds', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        title: 'foo',
-                        body: 'bar',
-                        userId: 1,
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                    })
-                    .then(response => response.json())
-                    .then(respoce => {
-                        console.log(respoce)
-                        statusMessage.textContent = message.success})
-                    .catch(() => statusMessage.textContent = message.failure)
-                    .finally(() => form.reset())
+                const formData = new FormData(form);
+
+                const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+                postData('http://localhost:3000/requests', json)
+                .then(data => {
+                    console.log(data);
+                    statusMessage.textContent = message.success
+                }).catch(() => {
+                    statusMessage.textContent = message.failure
+                }).finally(() => {
+                    form.reset();
+                });
             }
         })
     }
