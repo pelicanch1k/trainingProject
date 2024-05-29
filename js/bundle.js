@@ -1,6 +1,23 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./js/functions/getDeadLine.js":
+/*!*************************************!*\
+  !*** ./js/functions/getDeadLine.js ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = () => {    
+    let now = new Date();
+    dayNow = now.getDate()
+
+    now.setDate(dayNow + 1)
+
+    return now
+}
+
+/***/ }),
+
 /***/ "./js/modules/calc.js":
 /*!****************************!*\
   !*** ./js/modules/calc.js ***!
@@ -365,15 +382,17 @@ module.exports = () => {
 /*!*****************************!*\
   !*** ./js/modules/timer.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = () => {
     // Timer
 
-    const deadLine = "2024-04-08"
+    const deadLine = __webpack_require__(/*! ../functions/getDeadLine */ "./js/functions/getDeadLine.js")()
+    console.log(deadLine)
 
     const getTimeRemaining = (endTime) =>{
-        const t = Date.parse(endTime) - Date.parse(new Date())
+        const t = endTime - new Date()
+
         if (t <= 0){
             return null
         }

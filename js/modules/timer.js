@@ -1,10 +1,12 @@
 module.exports = () => {
     // Timer
 
-    const deadLine = "2024-04-08"
+    const deadLine = require("../functions/getDeadLine")()
+    console.log(deadLine)
 
     const getTimeRemaining = (endTime) =>{
-        const t = Date.parse(endTime) - Date.parse(new Date())
+        const t = endTime - new Date()
+
         if (t <= 0){
             return null
         }
